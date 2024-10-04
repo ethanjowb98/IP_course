@@ -8,7 +8,8 @@ I=imnoise(I,'salt & pepper',0.02);
 
 M1 = median_filter(I,3,3);
 M2 = median_filter(I,6,6);
-M3 = median_filter(I,1,10);
+M3 = median_filter(I,2,2);
+M3 = median_filter(M3,1,10);
 
 figure(66);
 colormap(gray);
