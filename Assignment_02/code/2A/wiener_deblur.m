@@ -10,24 +10,32 @@ Fi = fft2(I);
 
   B_padded = zeros(size(I));
 
-  [len_x_img, len_y_img] = size(I);
   [len_x_blur, len_y_blur] = size(B);
-  
-  x_offset = ceil((len_x_img-len_x_blur)/2);
-  y_offset = ceil((len_y_img-len_y_blur)/2);
+
+  x_offset = 0;
+  y_offset = 0;
 
   for i = 1:len_x_blur
     for j = 1:len_y_blur
       B_padded(x_offset+i, y_offset+j) = B(i,j);
     end
   end
-  imshow(B_padded);
+
   % Compute FFT of the zero-padded blur kernel
   Fb = fft2(B_padded);
 
   % Compute the Wiener filter in the frequency domain
-  H_conj = conj(Fb);  % Conjugate of the FFT of the blur kernel
-  F_deblur = (H_conj ./ (Fb .* H_conj + k)) .* Fi;
+
+  [len_x_f, len_y_f] = size(Fb);
+
+  F_deblur = zeros(size(I));
+  F_deblur = fft2(F_deblur);
+
+  for i = 1:len_x_f
+    for j = 1:len_y_f
+      F_deblur(i,j) = (Fi(i,j)/Fb(i,j))*(abs(Fb(i,j)^2)/(abs(Fb(i,j)^2)+k));
+    end
+  end
 
   % Convert back to spatial domain
   I_deblur = real(ifft2(F_deblur));
