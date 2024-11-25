@@ -29,9 +29,25 @@ new_image = previous_image;
 tile_num=0;
 % ANALYSE (AND COMPRESS?) EACH 8x8 BLOCK IN THE IMAGE IN TURN
 % FOR LOOPS
-      % 1. retrieve coefficients for this block
-      % 2. retrieve coefficients for this block
-      % 3. determine if block needs updating / decoding
+for ii = 1:8:size(previous_image, 1)
+  for jj = 1:8:size(previous_image, 2)
+    tile_num = tile_num + 1;
+
+    % 1. retrieve coefficients for this block
+    dc_iijj = dc_coeffs((ii + 7)/ 8, (jj + 7)/ 8);
+
+    % 2. retrieve coefficients for this block
+    ac_iijj = ac_coeffs(:, tile_num);
+
+    % 3. determine if block needs updating / decoding
+    if dc_iijj ~= 0 || any(ac_iijj ~= 0)
+      % If the block was updated, decode it
+      tile = djpeg_8x8(dc_iijj, ac_iijj, Q);
+      new_image(ii:ii + 7, jj:jj + 7) = tile;
+    end
+
+  end
+end
       %   NOTE - any block not encoded will have all of the
       %   ac and dc coefficients set to ZERO. This 'clue' can be used to
       %   determine if a image block needs updating here.
@@ -49,8 +65,3 @@ return
 end
 
 % -------------------------------------------------------------------------
-
-
-
-  
-

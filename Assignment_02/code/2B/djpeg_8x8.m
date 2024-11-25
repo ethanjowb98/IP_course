@@ -44,6 +44,29 @@ function tile = djpeg_8x8(dc_coeff,ac_coeff,Q)
 		end
 		direction = 1-direction;
 	end
+
+	ac_count = 1;
+    direction = 1;
+    
+    for kk = 3:16
+        if direction
+            for ll = max(1, kk-8):min(kk-1, 8)
+                row = min(8, ll);
+                col = kk - row;
+                Zq(row, col) = ac_coeff(ac_count);
+                ac_count = ac_count + 1;
+            end
+        else
+            for ll = max(1, kk-8):min(kk-1, 8)
+                col = min(8, ll);
+                row = kk - col;
+                Zq(row, col) = ac_coeff(ac_count);
+                ac_count = ac_count + 1;
+            end
+        end
+        direction = 1 - direction;
+    end
+
 	% 3. Q scale factor used in quantisation step
 	if (Q<=50)
 		qt_scale = 50/Q;
@@ -52,10 +75,10 @@ function tile = djpeg_8x8(dc_coeff,ac_coeff,Q)
 	end
 
 	% 4. estimate original Z coefficients using Zq etc
-	Z = Zq .* (Qtable * qt_scale);
+	Z = round(Zq .* (Qtable * qt_scale));
 
 	% 5. inverse dct (assign to variable 'tile')
-	tile = idct2(Z);
+	tile = idct(Z);
 
 	%-----------change code above here --------------------------------
 
