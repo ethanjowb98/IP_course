@@ -49,7 +49,7 @@ imagesc(E); title('Edges'); axis equal tight;
 colormap(gray);
 drawnow;
 
-I = double(imread('engine.tif'))/255;
+I = double(imread('high-trestle-bridge.tif'))/255;
 [E,B,G] = log_edge(I,13);
 figure
 subplot(2,2,1);

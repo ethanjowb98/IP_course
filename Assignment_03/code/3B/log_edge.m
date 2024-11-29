@@ -26,17 +26,40 @@ threshK=max(1,-0.5*N+7.5); % multiply threshold by this factor
 
 %-----------change code from here --------------------------------
 %
-% 1. Create and emtpy array E and and an array G containing the filtered
+% 1. Create and empty array E and and an array G containing the filtered
 %    image (use conv2 with the 'same' option to do this).
+E = zeros(size(I));
+G = conv2(I, F, 'same');
+
 % 2. compute threshold t (0.75*mean(G)) of the LoG image stored in
 %    G (and multiply by threshK)
+t = 0.75*mean(G) * threshK; % threshold
+
 % 3. identify the zero crossing points 
 % 4. preserve those zero crossing points where the sum of the
 %    magnitudes of G accross the zero crossing is > t
 
-% NOTE: remove the dummy code line below
-E = rand(size(I)) > 0.95; G=[]; % <-- remove
+half_N = floor(N/2);
 
+sides = [0 1; 0 -1; 1 0; -1 0];
+[row_side, ~] = size(sides);
+
+[height, width] = size(G);
+for i = half_N:height - half_N
+  for j = half_N:width - half_N
+    if G(i,j) > 0
+      for k = 1:row_side
+        edge = G(i + sides(k,1), j + sides(k,2));
+        if edge < 0
+          if abs(G(i,j)) + abs(edge) > t
+            E(i,j) = 1;
+            break
+          end
+        end
+      end
+    end
+  end
+end
 %-----------change code above here --------------------------------
 
 return
