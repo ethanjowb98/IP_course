@@ -39,7 +39,30 @@ threshold = hand_threshold(I);
 % examples etc.
 % ----------- FILL IN THE SECTION BELOW ------------------------------
 
-B = (I > threshold); % <-- DELETE AND REPLACE THIS LINE
+ % Optional: Apply a scaling factor to the threshold if shadows exist
+ scale_factor = 0.25; % Adjust this value as needed to handle shadows
+ threshold = scale_factor * threshold;
+
+ % Step 2: Threshold the image to create a binary mask
+ B = I > threshold; % Binary image after thresholding
+
+ % Step 3: Morphological operations for cleaning up the binary image
+ 
+ % Fill holes inside the hand region
+ B = imfill(B, 'holes');
+ 
+ % Remove small isolated noise using opening
+ B = imopen(B, strel('disk', 5)); % You can adjust the disk size
+
+ % Close gaps in the hand using closing
+ B = imclose(B, strel('disk', 3)); % Adjust size to close gaps between fingers
+
+ % Optional: Additional erosion and dilation to refine edges
+ B = imerode(B, strel('disk', 2));
+ B = imdilate(B, strel('disk', 2));
+
+ % Step 4: Keep only the largest connected component (the hand)
+ B = bwareafilt(B, 1); % Keeps the largest connected region
 
 % ----------- FILL IN THE SECTION ABOVE ------------------------------
 

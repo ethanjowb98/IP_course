@@ -6,15 +6,24 @@ if (isa(I,'uint8'))
   I=double(I)/255;
 end
 
-
-% TO BE FILLED IN BY YOU (See assignment sheet)
-% this should implement isothresh for at least 10 iterations. I
-% suggest you use the mean of the whole image as the initial value for
-% T.
-
 % ---------- INSERT YOUR CODE BELOW ------------------------------------
-     
-T = rand(1,1); % <--- DELETE and REPLACE
+
+% Initial threshold T (mean intensity)
+T = mean(I(:));
+
+% Iterative isothresh calculation (10 iterations)
+for k = 1:10
+  % Calculate mean intensities for pixels above and below the threshold
+  I_above = I(I > T);
+  I_below = I(I <= T);
+  
+  % Avoid empty regions by checking for non-empty sets
+  mean_above = mean(I_above(:));
+  mean_below = mean(I_below(:));
+
+  % Update threshold using the isothresh formula
+  T = (mean_above + mean_below) / 2;
+end
 
 % ---------- INSERT YOUR CODE ABOVE ------------------------------------
 

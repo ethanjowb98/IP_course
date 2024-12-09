@@ -32,7 +32,11 @@ Ctest=[];
 IXtest=[];
 Ftrain=[];
 Ftest=[];
-classlist=unique(C); nclasses=max(C);
+disp(F);
+disp(C);
+disp(k);
+classlist=unique(C); 
+nclasses=max(C);
 for class=1:length(classlist)
   ix=find(C==classlist(class));
   if (~isempty(ix))
@@ -109,6 +113,3 @@ disp('Completed...');
 disp('Note: bracketed numbers above refer to entry in original feature dataset.');
 
 return
-
-
-

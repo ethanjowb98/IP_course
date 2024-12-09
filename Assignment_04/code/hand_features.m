@@ -15,9 +15,39 @@ function F = hand_features(B)
 % if you wish to get good results.
 
 % ---------- INSERT YOUR CODE BELOW ------------------------------------
+% Ensure B is a binary image
+B = logical(B);
 
-% DELETE THIS LINE - IT JUST GENERATES A 1x5 vector OF DUMMY DATA
-F = [5 4 3 2 1] .* randn(1,5) + [1 2 3 4 5];
+% Feature 1: Area (number of pixels in the region)
+area = sum(B(:));
+
+% Feature 2: Perimeter (length of the boundary)
+perimeter = sum(sum(bwperim(B)));
+
+% Feature 3: Eccentricity (how elongated the region is)
+props = regionprops(B, 'Eccentricity', 'Centroid', 'MajorAxisLength', 'MinorAxisLength', 'Extent');
+eccentricity = props.Eccentricity;
+
+% Feature 4: Aspect Ratio (MajorAxisLength / MinorAxisLength)
+aspectRatio = props.MajorAxisLength / props.MinorAxisLength;
+
+% Feature 5: Extent (ratio of area to bounding box area)
+extent = props.Extent;
+
+% Feature 6: Circularity (4 * pi * Area / Perimeter^2)
+circularity = (4 * pi * area) / (perimeter ^ 2);
+
+% Feature 7: Solidity (area / convex hull area)
+solidity = regionprops(B, 'Solidity').Solidity;
+
+% Feature 8: Hu Moments (7 invariant moments)
+huMoments = extractHOGFeatures(B, 'CellSize', [32 32]);
+
+% Combine features into a feature vector
+F = [area, perimeter, eccentricity, aspectRatio, extent, circularity, solidity, huMoments];
+
+% Optional: Normalize features (if desired)
+% F = F / norm(F);
 
 % ---------- INSERT YOUR CODE ABOVE ------------------------------------
 
