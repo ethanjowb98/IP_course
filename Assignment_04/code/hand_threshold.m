@@ -11,7 +11,7 @@ end
 % Initial threshold T (mean intensity)
 T = mean(I(:));
 
-% Iterative isothresh calculation (10 iterations)
+% Iterative isothresh calculation (at least 10 iterations)
 for k = 1:10
   % Calculate mean intensities for pixels above and below the threshold
   I_above = I(I > T);

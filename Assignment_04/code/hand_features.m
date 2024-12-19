@@ -35,8 +35,7 @@ aspectRatio = props.MajorAxisLength / props.MinorAxisLength;
 extent = props.Extent;
 
 % Feature 6: Circularity (4 * pi * Area / Perimeter^2)
-% circularity = (4 * pi * area) / (perimeter ^ 2);
-signature = hand_signature(B);
+circularity = (4 * pi * area) / (perimeter ^ 2);
 
 % Feature 7: Solidity (area / convex hull area)
 bwB = bwboundaries(B);
@@ -46,8 +45,13 @@ solidity = fitellipse(bwB(:,2), bwB(:,1));
 % Feature 8: Hu Moments (7 invariant moments)
 huMoments = hu(B, false);
 
+% Feature 9: Signature
+signature = hand_signature(B);
+
 % Combine features into a feature vector
-F = [area, perimeter, eccentricity, aspectRatio, extent, signature, solidity, huMoments];
+% F = [area, perimeter, eccentricity, aspectRatio, extent, circularity, solidity, huMoments, signature];
+
+F = [huMoments, circularity];
 
 % Optional: Normalize features (if desired)
 % F = F / norm(F);
